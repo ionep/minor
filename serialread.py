@@ -9,10 +9,13 @@ stopbits=serial.STOPBITS_ONE,
 bytesize=serial.EIGHTBITS,
 timeout=1	
 );
-counter=0;
 while 1:
-	x=ser.readline();
-	if(len(x)==0):
-		print "Null";
-	else:
-		print x;
+	y="";
+	x=ser.read();
+	if(x=='~'):
+		while True:
+			x=ser.read();
+			if(x=='`'):
+				break;
+			y=y+str(x);	
+		print y;

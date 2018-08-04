@@ -1,6 +1,7 @@
 from lcd import *
+from datetime import datetime
 
-def classes(keypad):
+def classes(keypad,serial):
 	lcd_clear();
 	lcd_string("Class Selected",LCD_LINE_1);
 	time.sleep(2);
@@ -39,14 +40,45 @@ def classes(keypad):
 					block=block+"*";
 				lcd_string(block,LCD_LINE_2);
 			#code=raw_input();
-			if(code=="1234"):
+			if(code=="0000"):
 				lcd_clear();
 				lcd_string("Correct Code",LCD_LINE_1);
-				time.sleep(3);
+				time.sleep(1);
+				start=datetime.now();
+				diff=0;
+				hour=0;
+				minute=0;
+				while(diff<=100): #seconds
+					diff=(datetime.now()-start).total_seconds();
+					minute=int(diff)-hour*60;
+					#minute=int(diff/60)-hour*60;
+					if(minute>=60):
+						hour=hour+1;
+						minute=minute-60;
+					
+					#format display
+					displayTime="";
+					if(hour<10):
+						displayTime="0";
+					displayTime=displayTime+str(hour);
+					displayTime=displayTime+":";
+					if(minute<10):
+						displayTime=displayTime+"0";
+					displayTime=displayTime+str(minute);
+					lcd_string(displayTime,LCD_LINE_2);
+					lcd_string("Scan Card:",LCD_LINE_1);
+					y="";
+					x=serial.read();
+					if(x=='~'):
+						while True:
+							x=serial.read();
+							if(x=='`'):
+								break;
+							y=y+str(x);	
+						print y;
 			else:
 				lcd_clear();
 				lcd_string("Invalid Code.",LCD_LINE_1);
-				time.sleep(3);
+				time.sleep(1);
 				continue;
 			
-			periods=0;

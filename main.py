@@ -2,6 +2,16 @@ from lcd import *
 from classMode import *
 from examMode import *
 from keypad import *
+import serial
+
+ser=serial.Serial(
+port='/dev/ttyAMA0',
+baudrate=9600,
+parity=serial.PARITY_NONE,
+stopbits=serial.STOPBITS_ONE,
+bytesize=serial.EIGHTBITS,
+timeout=1	
+);
 
 if __name__ == '__main__':
 
@@ -24,7 +34,7 @@ if __name__ == '__main__':
 		
 		#modes code
 		if(mode==1): #class
-			classes(keypad);
+			classes(keypad,ser);
 		elif(mode==2): #exams
 			exam();
 		else:
