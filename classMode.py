@@ -1,5 +1,9 @@
 from lcd import *
 from datetime import datetime
+import urllib2
+from urllib import urlencode
+
+url="http://localhost/index.php";
 
 def classes(keypad,serial):
 	lcd_clear();
@@ -40,15 +44,24 @@ def classes(keypad,serial):
 					block=block+"*";
 				lcd_string(block,LCD_LINE_2);
 			#code=raw_input();
-			if(code=="0000"):
+			data={
+				'code':code,
+				'periods':periods,
+				'exam':0
+			}
+			encoded=urlencode(data)
+			website=urllib2.urlopen(url,encoded);
+			result= website.read();
+			if(result!="-1"):
 				lcd_clear();
-				lcd_string("Correct Code",LCD_LINE_1);
+				lcd_string("Welcome",LCD_LINE_1);
+				lcd_string(result,LCD_LINE_2);
 				time.sleep(1);
 				start=datetime.now();
 				diff=0;
 				hour=0;
 				minute=0;
-				while(diff<=100): #seconds
+				while(diff<=periods*50): #need to change to seconds
 					diff=(datetime.now()-start).total_seconds();
 					minute=int(diff)-hour*60;
 					#minute=int(diff/60)-hour*60;
@@ -75,7 +88,33 @@ def classes(keypad,serial):
 							if(x=='`'):
 								break;
 							y=y+str(x);	
-						print y;
+						data={
+							'roll':y,
+							'mode':1,
+							'code':code,
+							'period':periods
+						};
+						encoded=urlencode(data)
+						website=urllib2.urlopen(url,encoded);
+						a=website.read();
+						if(a=="-1"):
+							lcd_clear();
+							lcd_string("Student Not",LCD_LINE_1);
+							lcd_string("Found",LCD_LINE_2);
+						elif(a=="-2"):
+							lcd_clear();
+							lcd_string("Multiple ",LCD_LINE_1);						
+							lcd_string("attendance",LCD_LINE_2);						
+							
+						elif(a=="=3"):
+							lcd_clear();
+							lcd_string("You are ",LCD_LINE_1);
+							lcd_string("     late",LCD_LINE_2);
+						else:
+							lcd_clear();
+							lcd_string("Welcome",LCD_LINE_1);
+							lcd_string(a,LCD_LINE_2);
+						time.sleep(2);
 			else:
 				lcd_clear();
 				lcd_string("Invalid Code.",LCD_LINE_1);

@@ -36,7 +36,7 @@ if __name__ == '__main__':
 		if(mode==1): #class
 			classes(keypad,ser);
 		elif(mode==2): #exams
-			exam();
+			exam(keypad,ser);
 		else:
 			lcd_string("Invalid Command",LCD_LINE_1);
 			lcd_string("Try again",LCD_LINE_2);
